@@ -364,7 +364,17 @@ export async function fetchSRSDataFromFirestore(userId?: string): Promise<Record
 export async function deleteWordFromFirestore(wordId: string) {
   try {
     await deleteDoc(doc(db, 'words', wordId));
-    await deleteDoc(doc(db, 'srsData', wordId));
+
+    // srsData docs are namespaced as `${userId}_${wordId}`, so a word can have
+    // one SRS record per user who has studied it. Find and remove them all.
+    const srsCol = collection(db, 'srsData');
+    const q = query(srsCol, where('wordId', '==', wordId));
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      const batch = writeBatch(db);
+      snapshot.forEach(docSnap => batch.delete(docSnap.ref));
+      await batch.commit();
+    }
   } catch (e) {
     console.error('Error deleting word from Firestore:', e);
   }
@@ -372,7 +382,9 @@ export async function deleteWordFromFirestore(wordId: string) {
 
 export async function saveSRSDataToFirestore(srsItem: SRSItem, userId: string) {
   try {
-    const srsRef = doc(db, 'srsData', srsItem.wordId);
+    // Namespaced by user so two different learners reviewing the same word
+    // don't clobber each other's spaced-repetition progress.
+    const srsRef = doc(db, 'srsData', `${userId}_${srsItem.wordId}`);
     await setDoc(srsRef, {
       ...srsItem,
       userId,

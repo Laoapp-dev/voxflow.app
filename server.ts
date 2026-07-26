@@ -2,7 +2,6 @@ import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
 import multer from 'multer';
-import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI } from '@google/genai';
 import { generateFallbackVocabulary } from './src/lib/fallbackVocab';
 
@@ -314,7 +313,8 @@ async function startServer() {
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
+    const viteModule = await import('vite');
+    const vite = await viteModule.createServer({
       server: { middlewareMode: true },
       appType: 'spa',
     });

@@ -1,30 +1,35 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Helper function
+    // Helper function - any signed-in session (Google, email/password, or anonymous guest)
     function isSignedIn() {
       return request.auth != null;
     }
 
-    // Users collection
+    // Users collection - a user may only read/write their own profile document
     match /users/{userId} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
-    // Words collection - Public read for learners auto-sync, write for authenticated users/admins
+    // Words collection - shared vocabulary library.
+    // Public read (needed for the app to auto-sync words before sign-in),
+    // but writes require an authenticated session (Google/email/guest).
     match /words/{wordId} {
       allow read: if true;
-      allow write, create, delete, update: if true;
+      allow write, create, update, delete: if isSignedIn();
     }
 
-    // SRS Data collection
+    // SRS Data collection - docs are namespaced as `${uid}_${wordId}`,
+    // so only the owning user may read/write their own review records.
     match /srsData/{srsId} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn() && srsId.matches(request.auth.uid + '_.*');
     }
 
-    // Shadowing practices
+    // Shadowing practices - only the recording owner may read/write it
     match /shadowingPractices/{practiceId} {
-      allow read, write: if true;
+      allow read, write: if isSignedIn() &&
+        (resource == null || resource.data.userId == request.auth.uid) &&
+        request.resource.data.userId == request.auth.uid;
     }
   }
 }

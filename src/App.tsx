@@ -184,9 +184,39 @@ export default function App() {
     });
   }, [words, firebaseUser?.uid]);
 
-  // Firebase Auth State & Real-time Firestore Listener
+  // Track whether Firebase has resolved the initial auth session yet, so we
+  // don't briefly flash the sign-in screen for an already-logged-in user.
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Firebase Auth State listener - resolves on mount and on every login/logout
   useEffect(() => {
-    // 1. Listen for global published words from Firestore (auto-sync for all learners)
+    const unsubscribeAuth = onAuthStateChanged(auth, async (usr: User | null) => {
+      if (usr) {
+        setFirebaseUser(usr);
+        const firestoreProfile = await fetchUserProfileFromFirestore(usr.uid);
+        setUserProfile(prev => ({
+          ...prev,
+          uid: usr.uid,
+          email: usr.email || firestoreProfile?.email || prev.email,
+          displayName: firestoreProfile?.displayName || usr.displayName || usr.email?.split('@')[0] || 'Learner',
+          photoURL: usr.photoURL || firestoreProfile?.photoURL || null,
+          dailyGoal: firestoreProfile?.dailyGoal || prev.dailyGoal || 10,
+          streak: firestoreProfile?.streak || prev.streak || 1,
+          role: firestoreProfile?.role || prev.role || 'learner',
+        }));
+      }
+      setAuthChecked(true);
+    });
+
+    return () => unsubscribeAuth();
+  }, []);
+
+  // Real-time Firestore word sync - only subscribes once a user is signed in,
+  // since Firestore rules require authentication to write (and the seed step
+  // below needs a valid session to succeed).
+  useEffect(() => {
+    if (!firebaseUser) return;
+
     const wordsCol = collection(db, 'words');
     const unsubWords = onSnapshot(wordsCol, async (snapshot) => {
       if (!snapshot.empty) {
@@ -204,38 +234,18 @@ export default function App() {
           return Array.from(map.values());
         });
       } else {
-        // Auto seed curriculum to Firestore if empty
+        // Auto seed curriculum to Firestore if empty (now running under an
+        // authenticated session, so it satisfies the security rules).
         try {
-          await pushAllWordsToFirestore(INITIAL_VOCABULARY, 'admin_published');
+          await pushAllWordsToFirestore(INITIAL_VOCABULARY, firebaseUser.uid || 'admin_published');
         } catch (err) {
           console.error('Auto seed error:', err);
         }
       }
     });
 
-    // 2. Listen to Auth State
-    const unsubscribeAuth = onAuthStateChanged(auth, async (usr: User | null) => {
-      if (usr) {
-        setFirebaseUser(usr);
-        const firestoreProfile = await fetchUserProfileFromFirestore(usr.uid);
-        setUserProfile(prev => ({
-          ...prev,
-          uid: usr.uid,
-          email: usr.email || firestoreProfile?.email || prev.email,
-          displayName: firestoreProfile?.displayName || usr.displayName || usr.email?.split('@')[0] || 'Learner',
-          photoURL: usr.photoURL || firestoreProfile?.photoURL || null,
-          dailyGoal: firestoreProfile?.dailyGoal || prev.dailyGoal || 10,
-          streak: firestoreProfile?.streak || prev.streak || 1,
-          role: firestoreProfile?.role || prev.role || 'learner',
-        }));
-      }
-    });
-
-    return () => {
-      unsubWords();
-      unsubscribeAuth();
-    };
-  }, []);
+    return () => unsubWords();
+  }, [firebaseUser]);
 
   // Handlers
   const handleSignedIn = async (usr: any, role: 'admin' | 'learner') => {
@@ -370,6 +380,16 @@ export default function App() {
     if (!srs) return true;
     return isDueToday(srs.dueDate);
   });
+
+  // While Firebase is resolving whether a session already exists, show a
+  // minimal loading state instead of flashing the sign-in screen.
+  if (!authChecked && !userProfile.email) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   // Lock Application behind SignInPage until user/learner signs in via Gmail/Firebase
   if (!firebaseUser && !userProfile.email) {
