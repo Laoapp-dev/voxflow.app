@@ -1,0 +1,12 @@
+{
+  "projectId": "voxflow-app",
+  "appId": "1:296292513863:web:cb2a3ad09210bf712fd962",
+  "apiKey": "AIzaSyBIP2OyIsfJ1H_YVMQ1U7t45tw3bDd1N0I",
+  "authDomain": "voxflow-app.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-voxflowapp-1a4e3ed7-9bb4-4bb8-88f1-c0e113e21ad3",
+  "storageBucket": "voxflow-app.firebasestorage.app",
+  "messagingSenderId": "296292513863",
+  "measurementId": "",
+  "oAuthClientId": "296292513863-nfp5m0c5re3ee0jfvb6rok0pp52n456e.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
+}

@@ -1,0 +1,32 @@
+{
+  "short_name": "VoxFlow 3D",
+  "name": "VoxFlow 3D - Vocab & Shadowing",
+  "description": "Learn English vocabulary with 3D flashcards, CEFR level challenges, and AI speech shadowing.",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any"
+    }
+  ],
+  "start_url": "/",
+  "id": "/",
+  "background_color": "#0b0f19",
+  "theme_color": "#0f172a",
+  "display": "standalone",
+  "scope": "/",
+  "orientation": "portrait",
+  "categories": ["education", "productivity"]
+}

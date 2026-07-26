@@ -1,0 +1,10 @@
+{
+  "name": "English Flashcards & Shadowing Practice",
+  "description": "Spaced repetition flashcards, shadowing pronunciation practice with AI voice feedback, vocabulary tracking, and bi-directional Google Sheets sync.",
+  "requestFramePermissions": [
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

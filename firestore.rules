@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read, write: if true;
+    }
+
+    // Words collection - Public read for learners auto-sync, write for authenticated users/admins
+    match /words/{wordId} {
+      allow read: if true;
+      allow write, create, delete, update: if true;
+    }
+
+    // SRS Data collection
+    match /srsData/{srsId} {
+      allow read, write: if true;
+    }
+
+    // Shadowing practices
+    match /shadowingPractices/{practiceId} {
+      allow read, write: if true;
+    }
+  }
+}

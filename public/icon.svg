@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1" />
+      <stop offset="100%" stop-color="#a855f7" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+  </defs>
+
+  <!-- App Icon Background -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+  <rect width="500" height="500" x="6" y="6" rx="122" fill="none" stroke="url(#accentGrad)" stroke-width="4" opacity="0.4" />
+
+  <!-- 3D Card Visual Stack -->
+  <rect x="130" y="110" width="220" height="280" rx="24" fill="#312e81" opacity="0.5" transform="rotate(-10 240 250)" />
+  <rect x="160" y="110" width="220" height="280" rx="24" fill="url(#accentGrad)" transform="rotate(5 270 250)" />
+
+  <!-- Front Main Card -->
+  <rect x="146" y="126" width="220" height="260" rx="20" fill="#0f172a" stroke="#818cf8" stroke-width="3" />
+
+  <!-- Sound Waves & Mic Visual -->
+  <circle cx="256" cy="226" r="42" fill="url(#glowGrad)" opacity="0.2" />
+  <path d="M256 196 v60 M240 216 v20 M272 216 v20 M224 222 v8 M288 222 v8" stroke="url(#glowGrad)" stroke-width="6" stroke-linecap="round" />
+
+  <!-- Text / Title Badge -->
+  <rect x="186" y="320" width="140" height="32" rx="16" fill="url(#accentGrad)" />
+  <text x="256" y="341" font-family="system-ui, sans-serif" font-weight="900" font-size="16" fill="#ffffff" text-anchor="middle" letter-spacing="1">VOXFLOW</text>
+</svg>

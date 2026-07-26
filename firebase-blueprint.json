@@ -1,0 +1,78 @@
+{
+  "entities": {
+    "users": {
+      "title": "Users",
+      "description": "User profile and streak settings",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "googleSheetId": { "type": "string" },
+        "dailyGoal": { "type": "number" },
+        "streak": { "type": "number" },
+        "lastActiveDate": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "words": {
+      "title": "Vocabulary Words",
+      "description": "Flashcard words and definitions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "word": { "type": "string" },
+        "phonetic": { "type": "string" },
+        "partOfSpeech": { "type": "string" },
+        "definition": { "type": "string" },
+        "example": { "type": "string" },
+        "translation": { "type": "string" },
+        "category": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "source": { "type": "string" },
+        "sheetRowIndex": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "word", "definition"]
+    },
+    "srsData": {
+      "title": "SRS Word Data",
+      "description": "Spaced repetition state for each user word",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "wordId": { "type": "string" },
+        "interval": { "type": "number" },
+        "repetition": { "type": "number" },
+        "easeFactor": { "type": "number" },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "lastReviewed": { "type": "string", "format": "date-time" },
+        "status": { "type": "string" },
+        "lapses": { "type": "number" }
+      },
+      "required": ["userId", "wordId", "interval", "repetition", "easeFactor", "status"]
+    },
+    "shadowingPractices": {
+      "title": "Shadowing Recordings & AI Feedback",
+      "description": "Shadowing feedback audio analysis",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "wordId": { "type": "string" },
+        "targetText": { "type": "string" },
+        "userTranscript": { "type": "string" },
+        "pronunciationScore": { "type": "number" },
+        "fluencyScore": { "type": "number" },
+        "accuracyScore": { "type": "number" },
+        "aiFeedback": { "type": "string" },
+        "recordedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "targetText"]
+    }
+  }
+}
